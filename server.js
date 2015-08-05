@@ -30,22 +30,30 @@ var server = http.createServer(app)
 //initiate socket io using the server instance
 const io       = socketIo(server);
 
+//emits a message to all sockets with number of connected clients
+function usersConnected(){
+  io.sockets.emit('usersConnected', io.engine.clientsCount);
+};
+
 //setup event listener for connections to the server
 io.on('connection', function(socket){
   //logs to the server when a user has connected and the total count of all users
   console.log('A user has connected.', io.engine.clientsCount);
 
   //emits a message to all sockets when a new client connects
-  io.sockets.emit('usersConnected', io.engine.clentsCount);
+  usersConnected();
+
+  //sends message to specific socket when they connect
+  socket.emit('statusMessage', 'You have connected.');
 
   //setup event listener for disconnections to the server
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);
+    //emits a message to all sockets when a client disconnects
+    usersConnected();
   });
 
 });
-
-
 
 //export the server so we can use it later
 module.exports = server;
