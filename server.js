@@ -32,8 +32,20 @@ const io       = socketIo(server);
 
 //setup event listener for connections to the server
 io.on('connection', function(socket){
-  console.log('A user has connected.');
+  //logs to the server when a user has connected and the total count of all users
+  console.log('A user has connected.', io.engine.clientsCount);
+
+  //emits a message to all sockets when a new client connects
+  io.sockets.emit('usersConnected', io.engine.clentsCount);
+
+  //setup event listener for disconnections to the server
+  socket.on('disconnect', function () {
+    console.log('A user has disconnected.', io.engine.clientsCount);
+  });
+
 });
+
+
 
 //export the server so we can use it later
 module.exports = server;
