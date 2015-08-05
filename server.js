@@ -6,9 +6,6 @@ const socketIo = require('socket.io');
 //instantiate the app as an instance of express
 const app      = express();
 
-//initiate socket io using the server instance from the var below
-const io       = socketIo(server);
-
 //allows express app to serve the public directory
 app.use(express.static('public'));
 
@@ -29,6 +26,14 @@ var server = http.createServer(app)
                  .listen(port, function(){
                     console.log('Listening on port '+ port +'.');
                   });
+
+//initiate socket io using the server instance
+const io       = socketIo(server);
+
+//setup event listener for connections to the server
+io.on('connection', function(socket){
+  console.log('A user has connected.');
+});
 
 //export the server so we can use it later
 module.exports = server;
