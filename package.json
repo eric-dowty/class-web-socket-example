@@ -1,0 +1,20 @@
+{
+  "name": "web-sockets-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/eric-dowty/class-web-socket-example.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eric-dowty/class-web-socket-example/issues"
+  },
+  "homepage": "https://github.com/eric-dowty/class-web-socket-example#readme"
+}
