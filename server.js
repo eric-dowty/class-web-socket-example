@@ -35,6 +35,10 @@ function usersConnected(){
   io.sockets.emit('usersConnected', io.engine.clientsCount);
 };
 
+function usersVoteTally(voteCount){
+  io.sockets.emit('voteTally', voteCount);
+};
+
 //vote counter function
 function countVotes(votes) {
   var voteCount = {
@@ -46,7 +50,7 @@ function countVotes(votes) {
   for (vote in votes) {
     voteCount[votes[vote]]++
   }
-  io.sockets.emit('voteTally', voteCount);
+  usersVoteTally(voteCount);
   return voteCount;
 }
 
@@ -63,6 +67,9 @@ io.on('connection', function(socket){
 
   //sends message to specific socket when they connect
   socket.emit('statusMessage', 'You have connected.');
+
+  //sends a message to the socket with the initial vote tally
+  socket.emit('voteTally', countVotes(votes));
 
   //setup event listener for voteCast from the client
   socket.on('message', function(channel, message){
