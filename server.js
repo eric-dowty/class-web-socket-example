@@ -35,6 +35,24 @@ function usersConnected(){
   io.sockets.emit('usersConnected', io.engine.clientsCount);
 };
 
+//vote counter function
+function countVotes(votes) {
+  var voteCount = {
+    A: 0,
+    B: 0,
+    C: 0,
+    D: 0
+  };
+  for (vote in votes) {
+    voteCount[votes[vote]]++
+  }
+  io.sockets.emit('voteTally', voteCount);
+  return voteCount;
+}
+
+//setup a vote counter variable hash
+var votes = {};
+
 //setup event listener for connections to the server
 io.on('connection', function(socket){
   //logs to the server when a user has connected and the total count of all users
@@ -46,9 +64,23 @@ io.on('connection', function(socket){
   //sends message to specific socket when they connect
   socket.emit('statusMessage', 'You have connected.');
 
+  //setup event listener for voteCast from the client
+  socket.on('message', function(channel, message){
+    if(channel === 'voteCast'){
+      //adds a vote to the hash with socket id
+      votes[socket.id] = message;
+      console.log(countVotes(votes));
+      socket.emit('lastVote', message);
+    }
+    //console.log(channel, message);  
+  });
+
   //setup event listener for disconnections to the server
   socket.on('disconnect', function () {
     console.log('A user has disconnected.', io.engine.clientsCount);
+    //deletes a sockets vote on disconnect
+    delete votes[socket.id];
+    console.log(countVotes(votes));
     //emits a message to all sockets when a client disconnects
     usersConnected();
   });
